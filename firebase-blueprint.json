@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "profile": {
+      "title": "Profile Information",
+      "description": "General information about the portfolio owner",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "title": { "type": "string" },
+        "bio": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "cvUrl": { "type": "string" }
+      },
+      "required": ["name", "title", "bio"]
+    },
+    "skill": {
+      "title": "Skill",
+      "description": "Technical or soft skill",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "proficiency": { "type": "integer" }
+      },
+      "required": ["name", "proficiency"]
+    },
+    "project": {
+      "title": "Project",
+      "description": "Portfolio work entry",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "liveUrl": { "type": "string" },
+        "repoUrl": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "order": { "type": "integer" }
+      },
+      "required": ["title", "description"]
+    },
+    "education": {
+      "title": "Education Entry",
+      "description": "Academic background entry",
+      "type": "object",
+      "properties": {
+        "school": { "type": "string" },
+        "degree": { "type": "string" },
+        "period": { "type": "string" },
+        "description": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["school", "degree", "period"]
+    },
+    "contactInfo": {
+      "title": "Contact Information",
+      "description": "Public contact details",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "location": { "type": "string" },
+        "facebook": { "type": "string" },
+        "linkedin": { "type": "string" },
+        "github": { "type": "string" }
+      }
+    },
+    "message": {
+      "title": "Contact Message",
+      "description": "Message received via contact form",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "content"]
+    }
+  },
+  "firestore": {
+    "/settings/profile": {
+      "schema": "profile",
+      "description": "The global profile information"
+    },
+    "/settings/contact": {
+      "schema": "contactInfo",
+      "description": "Global contact information"
+    },
+    "/skills/{skillId}": {
+      "schema": "skill",
+      "description": "List of skills"
+    },
+    "/projects/{projectId}": {
+      "schema": "project",
+      "description": "List of portfolio projects"
+    },
+    "/education/{eduId}": {
+      "schema": "education",
+      "description": "Education history"
+    },
+    "/messages/{msgId}": {
+      "schema": "message",
+      "description": "User submitted contact messages"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      // For this applet, the admin is explicitly the user email from the context
+      return isSignedIn() && (
+        request.auth.token.email == 'giasuddinpadua2020@gmail.com' &&
+        request.auth.token.email_verified == true
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Helper for validation shape
+    function isValidProfile(data) {
+      return data.name is string && data.name.size() <= 100 &&
+             data.title is string && data.title.size() <= 100 &&
+             data.bio is string && data.bio.size() <= 2000;
+    }
+
+    function isValidSkill(data) {
+      return data.name is string && data.name.size() <= 100 &&
+             data.proficiency is int && data.proficiency >= 0 && data.proficiency <= 100;
+    }
+
+    function isValidProject(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.description is string && data.description.size() <= 2000;
+    }
+
+    function isValidEducation(data) {
+      return data.school is string && data.school.size() <= 200 &&
+             data.degree is string && data.degree.size() <= 200 &&
+             data.period is string && data.period.size() <= 100;
+    }
+
+    function isValidMessage(data) {
+      return data.name is string && data.name.size() <= 100 &&
+             data.email is string && data.email.size() <= 200 &&
+             data.content is string && data.content.size() <= 5000 &&
+             data.createdAt == request.time;
+    }
+
+    // PUBLIC READ, ADMIN WRITE
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /education/{eduId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // PUBLIC CREATE, ADMIN READ/DELETE
+    match /messages/{msgId} {
+      allow create: if isValidMessage(request.resource.data);
+      allow read, delete: if isAdmin();
+    }
+  }
+}
